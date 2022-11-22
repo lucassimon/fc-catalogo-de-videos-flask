@@ -1,0 +1,12 @@
+bcrypt
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+Pillow
+python-dotenv
+python-decouple
+python-dateutil
+python-slugify
+psycopg2
+pytz
+redis

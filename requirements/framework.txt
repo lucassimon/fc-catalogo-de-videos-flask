@@ -1,0 +1,16 @@
+-r base.txt
+
+
+Flask
+Flask-RESTful
+marshmallow
+Flask-JWT-Extended
+Flask-Cors
+Flask-Caching
+Flask-Migrate==4.0.0
+Flask-SQLAlchemy==3.0.2
+marshmallow
+webargs
+SQLAlchemy==1.4.44
+structlog
+blinker

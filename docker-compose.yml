@@ -1,0 +1,62 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+  static_volume:
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flask_catalog
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:alpine
+    container_name: redis
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+  test: &defaults
+    build:
+      context: .
+      target: dev
+    working_dir: /app/
+    volumes:
+      - .:/app/
+      - dependencies:/opt/venv
+    command: pytest
+    env_file:
+      - ./.docker/dev.env
+      - ./.docker/test.env
+  app:
+    <<: *defaults
+    command: flask --debug run --port=8000
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - db
+    env_file:
+      - ./.docker/dev.env
+  celery:
+    <<: *defaults
+    command: celery -A proj
+    depends_on:
+      - redis
+      - app
+      - rabbitmq
+    volumes:
+      - .:/home/app
+    env_file:
+      - ./.docker/dev.env
+

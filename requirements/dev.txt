@@ -1,0 +1,22 @@
+-r framework.txt
+
+alembic
+apispec
+Faker
+flask-shell-ipython
+flask-apispec
+pytest-flask
+snapshottest
+
+ipdb
+ipython
+isort
+black
+pytest
+pytest-cov
+pytest-runner
+factory_boy
+pylint
+coverage
+coverage-badge
+rich

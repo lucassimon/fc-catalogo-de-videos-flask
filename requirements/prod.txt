@@ -1,0 +1,4 @@
+-r framework.txt
+
+gunicorn
+sentry-sdk
