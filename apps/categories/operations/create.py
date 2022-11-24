@@ -1,5 +1,3 @@
-from dataclasses import asdict
-
 from marshmallow import Schema, fields, ValidationError, validate
 from kernel_catalogo_videos.core.utils import ACTIVE_STATUS, INACTIVE_STATUS
 from kernel_catalogo_videos.categories.application.use_cases.create.use_case import (
@@ -10,7 +8,7 @@ from kernel_catalogo_videos.categories.application.use_cases.create.input import
 )
 
 from apps.messages import Messages
-from apps.responses import Response
+from apps.exceptions import InvalidDataException
 from apps.categories.repositories import SQLAlchemyCategoryRepository
 
 
@@ -31,13 +29,7 @@ class CreateCategorySchema(Schema):
 
 def create(payload, *args, **kwargs):
     if payload is None:
-        return Response("categories").data_invalid(
-            "categories", {}, msg=Messages.NO_DATA.value
-        )
-
-    import ipdb
-
-    ipdb.set_trace()
+        raise InvalidDataException()
 
     try:
         data: CreateCategorySchema = CreateCategorySchema().load(payload)
@@ -50,11 +42,9 @@ def create(payload, *args, **kwargs):
 
         repo: SQLAlchemyCategoryRepository = SQLAlchemyCategoryRepository()
         output = CreateCategoryUseCase(repo=repo).execute(input_params=input_params)
-        return Response("categories").ok(
-            message=Messages.RESOURCE_CREATED.value.format("Categories"),
-            data=asdict(output),
-        )
+        return output
     except ValidationError as err:
-        return Response("categories").data_invalid(errors=err)
+
+        raise err
     except Exception as exc:
-        return Response("categories").exception(description=exc.__str__())
+        raise exc

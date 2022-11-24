@@ -39,12 +39,17 @@ def create_app():
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 
+    if app.config.get("DEBUG"):
+        app.config["SQLALCHEMY_ECHO"] = True
+
     if app.config.get("CACHE_ENABLED"):
         configure_cache(app)
 
     # configure database sqlalchemy
     configure_database(app)
     configure_migrate(app)
+
+    # configure structlog
     configure_logging()
 
     # executa a chamada da função de configuração

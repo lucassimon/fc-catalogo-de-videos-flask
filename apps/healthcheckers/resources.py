@@ -6,6 +6,7 @@ from flask_apispec.views import MethodResource
 from marshmallow import Schema, fields
 
 from apps.logging import make_logger
+from apps.middlewares import timer
 
 
 logger = make_logger()
@@ -21,6 +22,7 @@ class LivenessResponseSchema(Schema):
 
 class HealthCheckReadiness(MethodResource, Resource):
     @marshal_with(ReadinessResponseSchema)
+    @timer
     def get(self):
         user_agent = request.headers.get("HTTP_USER_AGENT", "UNKNOWN")
         peer_ip = request.remote_addr
