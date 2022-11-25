@@ -12,7 +12,15 @@ class InvalidDataException(werkzeug.exceptions.HTTPException):
 
 
 class OperationDBError(Exception):
-    def __init__(self, exc, operation, entity=None, **kwargs) -> None:
+    def __init__(
+            self,
+            exc,
+            operation: str,
+            code: int = 500,
+            entity=None,
+            **kwargs
+        ) -> None:
+        self.code = code
         self.exc = exc
         self.entity = entity
         self.operation = operation
